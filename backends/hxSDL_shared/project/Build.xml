@@ -1,0 +1,33 @@
+<xml>
+
+	<include name="${HXCPP}/build-tool/BuildCommon.xml"/>
+
+	<files id="src">
+
+        <include name="${haxelib:duell_hxSDL}/native/native.xml" />
+
+		<file name="src/ExternalInterface.mm"/>
+		<file name="src/SDLApplication.cpp"/>
+		<file name="src/SDLGamepad.cpp"/>
+		<file name="src/SDLJNI.cpp"/>
+		<file name="src/SDLMouse.cpp"/>
+		<file name="src/SDLRenderer.cpp"/>
+		<file name="src/SDLSystem.cpp"/>
+		<file name="src/SDLWindow.cpp"/>
+
+	</files>
+
+	<target id="NDLL" output="${LIBPREFIX}ios_hxSDL${DBG}${LIBEXTRA}" tool="linker" toolid="${STD_MODULE_LINK}">
+
+		<outdir name="../ndll/${BINDIR}"/>
+		<files id="src"/>
+
+	</target>
+
+	<target id="default">
+
+		<target id="NDLL"/>
+
+	</target>
+
+</xml>

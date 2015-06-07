@@ -4,8 +4,4 @@
     <!-- Setting up a shared backend can use this logic. -->
     <include path="backends/hxSDL_shared/duell_library.xml" if="android||ios" />
 
-    <!-- Setting up independent backends. For further native configuration check available libraries. -->
-    <include path="backends/hxSDL_ios/duell_library.xml" if="ios" />
-    <include path="backends/hxSDL_android/duell_library.xml" if="android" />
-
 </library>
