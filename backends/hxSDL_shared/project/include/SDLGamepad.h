@@ -1,5 +1,6 @@
-#ifndef LIME_SDL_GAMEPAD_H
-#define LIME_SDL_GAMEPAD_H
+
+#ifndef SDL_GAMEPAD_H
+#define SDL_GAMEPAD_H
 
 
 #include <SDL.h>
@@ -8,19 +9,19 @@
 
 
 namespace lime {
-	
-	
+
+
 	class SDLGamepad {
-		
+
 		public:
-			
+
 			static bool Connect (int deviceID);
 			static int GetInstanceID (int deviceID);
 			static bool Disconnect (int id);
-		
+
 	};
-	
-	
+
+
 }
 
 
