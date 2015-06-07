@@ -1,3 +1,27 @@
+// Copyright (c) 2015, Khaled Garbaya
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// * Redistributions of source code must retain the above copyright notice, this
+//   list of conditions and the following disclaimer.
+//
+// * Redistributions in binary form must reproduce the above copyright notice,
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 #include <system/System.h>
 
 #ifdef HX_MACOS
@@ -33,158 +57,158 @@
 
 
 namespace lime {
-	
-	
+
+
 	const char* System::GetDirectory (SystemDirectory type, const char* company, const char* title) {
-		
+
 		switch (type) {
-			
+
 			case APPLICATION:
-				
+
 				return SDL_GetBasePath ();
 				break;
-			
+
 			case APPLICATION_STORAGE:
-				
+
 				return SDL_GetPrefPath (company, title);
 				break;
-			
+
 			case DESKTOP: {
-				
+
 				#if defined (HX_WINRT)
-				
+
 				Windows::Storage::StorageFolder folder = Windows::Storage::KnownFolders::HomeGroup;
 				std::wstring resultW (folder->Begin ());
 				std::string result (resultW.begin (), resultW.end ());
 				return result.c_str ();
-				
+
 				#elif defined (HX_WINDOWS)
-				
+
 				char result[MAX_PATH] = "";
 				SHGetFolderPath (NULL, CSIDL_DESKTOPDIRECTORY, NULL, SHGFP_TYPE_CURRENT, result);
 				return WIN_StringToUTF8 (result);
-				
+
 				#else
-				
+
 				std::string result = std::string (getenv ("HOME")) + std::string ("/Desktop");
 				return result.c_str ();
-				
+
 				#endif
 				break;
-				
+
 			}
-			
+
 			case DOCUMENTS: {
-				
+
 				#if defined (HX_WINRT)
-				
+
 				Windows::Storage::StorageFolder folder = Windows::Storage::KnownFolders::DocumentsLibrary;
 				std::wstring resultW (folder->Begin ());
 				std::string result (resultW.begin (), resultW.end ());
 				return result.c_str ();
-				
+
 				#elif defined (HX_WINDOWS)
-				
+
 				char result[MAX_PATH] = "";
 				SHGetFolderPath (NULL, CSIDL_MYDOCUMENTS, NULL, SHGFP_TYPE_CURRENT, result);
 				return WIN_StringToUTF8 (result);
-				
+
 				#else
-				
+
 				std::string result = std::string (getenv ("HOME")) + std::string ("/Documents");
 				return result.c_str ();
-				
+
 				#endif
 				break;
-				
+
 			}
-			
+
 			case FONTS: {
-				
+
 				#if defined (HX_WINRT)
-				
+
 				return 0;
-				
+
 				#elif defined (HX_WINDOWS)
-				
+
 				char result[MAX_PATH] = "";
 				SHGetFolderPath (NULL, CSIDL_FONTS, NULL, SHGFP_TYPE_CURRENT, result);
 				return WIN_StringToUTF8 (result);
-				
+
 				#elif defined (HX_MACOS)
-				
+
 				return "/Library/Fonts";
-				
+
 				#elif defined (IPHONEOS)
-				
+
 				return "/System/Library/Fonts/Cache";
-				
+
 				#elif defined (ANDROID)
-				
+
 				return "/system/fonts";
-				
+
 				#elif defined (BLACKBERRY)
-				
+
 				return "/usr/fonts/font_repository/monotype";
-				
+
 				#else
-				
+
 				return "/usr/share/fonts/truetype";
-				
+
 				#endif
 				break;
-				
+
 			}
-			
+
 			case USER: {
-				
+
 				#if defined (HX_WINRT)
-				
+
 				Windows::Storage::StorageFolder folder = Windows::Storage::ApplicationData::Current->RoamingFolder;
 				std::wstring resultW (folder->Begin ());
 				std::string result (resultW.begin (), resultW.end ());
 				return result.c_str ();
-				
+
 				#elif defined (HX_WINDOWS)
-				
+
 				char result[MAX_PATH] = "";
 				SHGetFolderPath (NULL, CSIDL_PROFILE, NULL, SHGFP_TYPE_CURRENT, result);
 				return WIN_StringToUTF8 (result);
-				
+
 				#else
-				
+
 				std::string result = getenv ("HOME");
 				return result.c_str ();
-				
+
 				#endif
 				break;
-				
+
 			}
-			
+
 		}
-		
+
 		return 0;
-		
+
 	}
-	
-	
+
+
 	double System::GetTimer () {
-		
+
 		return SDL_GetTicks ();
-		
+
 	}
-	
-	
+
+
 	FILE* FILE_HANDLE::getFile () {
-		
+
 		#ifndef HX_WINDOWS
-		
+
 		switch (((SDL_RWops*)handle)->type) {
-			
+
 			case SDL_RWOPS_STDFILE:
-				
+
 				return ((SDL_RWops*)handle)->hidden.stdio.fp;
-			
+
 			case SDL_RWOPS_JNIFILE:
 			{
 				#ifdef ANDROID
@@ -193,249 +217,249 @@ namespace lime {
 				return file;
 				#endif
 			}
-				
+
 			case SDL_RWOPS_WINFILE:
 			{
 				/*#ifdef HX_WINDOWS
 				printf("SDKFLJDSLFKJ\n");
 				int fd = _open_osfhandle ((intptr_t)((SDL_RWops*)handle)->hidden.windowsio.h, _O_RDONLY);
-				
+
 				if (fd != -1) {
 					printf("SDKFLJDSLFKJ\n");
 					return ::fdopen (fd, "rb");
-					
+
 				}
 				#endif*/
 			}
-			
+
 		}
-		
+
 		return NULL;
-		
+
 		#else
-		
+
 		return (FILE*)handle;
-		
+
 		#endif
-		
+
 	}
-	
-	
+
+
 	int FILE_HANDLE::getLength () {
-		
+
 		#ifndef HX_WINDOWS
-		
+
 		return SDL_RWsize (((SDL_RWops*)handle));
-		
+
 		#else
-		
+
 		return 0;
-		
+
 		#endif
-		
+
 	}
-	
-	
+
+
 	bool FILE_HANDLE::isFile () {
-		
+
 		#ifndef HX_WINDOWS
-		
+
 		return ((SDL_RWops*)handle)->type == SDL_RWOPS_STDFILE;
-		
+
 		#else
-		
+
 		return true;
-		
+
 		#endif
-		
+
 	}
-	
-	
+
+
 	int fclose (FILE_HANDLE *stream) {
-		
+
 		#ifndef HX_WINDOWS
-		
+
 		if (stream) {
-			
+
 			int code = SDL_RWclose ((SDL_RWops*)stream->handle);
 			delete stream;
 			return code;
-			
+
 		}
-		
+
 		return 0;
-		
+
 		#else
-		
+
 		if (stream) {
-			
+
 			int code = ::fclose ((FILE*)stream->handle);
 			delete stream;
 			return code;
-			
+
 		}
-		
+
 		return 0;
-		
+
 		#endif
-		
+
 	}
-	
-	
+
+
 	FILE_HANDLE *fdopen (int fd, const char *mode) {
-		
+
 		#ifndef HX_WINDOWS
-		
+
 		FILE* fp = ::fdopen (fd, mode);
 		SDL_RWops *result = SDL_RWFromFP (fp, SDL_TRUE);
-		
+
 		if (result) {
-			
+
 			return new FILE_HANDLE (result);
-			
+
 		}
-		
+
 		return NULL;
-		
+
 		#else
-		
+
 		FILE* result = ::fdopen (fd, mode);
-		
+
 		if (result) {
-			
+
 			return new FILE_HANDLE (result);
-			
+
 		}
-		
+
 		return NULL;
-		
+
 		#endif
-		
+
 	}
-	
-	
+
+
 	FILE_HANDLE *fopen (const char *filename, const char *mode) {
-		
+
 		#ifndef HX_WINDOWS
-		
+
 		SDL_RWops *result;
-		
+
 		#ifdef HX_MACOS
-		
+
 		result = SDL_RWFromFile (filename, "rb");
-		
+
 		if (!result) {
-			
+
 			CFStringRef str = CFStringCreateWithCString (NULL, filename, kCFStringEncodingUTF8);
 			CFURLRef path = CFBundleCopyResourceURL (CFBundleGetMainBundle (), str, NULL, NULL);
 			CFRelease (str);
-			
+
 			if (path) {
-				
+
 				str = CFURLCopyPath (path);
 				CFIndex maxSize = CFStringGetMaximumSizeForEncoding (CFStringGetLength (str), kCFStringEncodingUTF8);
 				char *buffer = (char *)malloc (maxSize);
-				
+
 				if (CFStringGetCString (str, buffer, maxSize, kCFStringEncodingUTF8)) {
-					
+
 					result = SDL_RWFromFP (::fopen (buffer, "rb"), SDL_TRUE);
 					free (buffer);
-					
+
 				}
-				
+
 				CFRelease (str);
 				CFRelease (path);
-				
+
 			}
-			
+
 		}
 		#else
 		result = SDL_RWFromFile (filename, mode);
 		#endif
-		
+
 		if (result) {
-			
+
 			return new FILE_HANDLE (result);
-			
+
 		}
-		
+
 		return NULL;
-		
+
 		#else
-		
+
 		FILE* result = ::fopen (filename, mode);
-		
+
 		if (result) {
-			
+
 			return new FILE_HANDLE (result);
-			
+
 		}
-		
+
 		return NULL;
-		
+
 		#endif
-		
+
 	}
-	
-	
+
+
 	size_t fread (void *ptr, size_t size, size_t count, FILE_HANDLE *stream) {
-		
+
 		#ifndef HX_WINDOWS
-		
+
 		return SDL_RWread (stream ? (SDL_RWops*)stream->handle : NULL, ptr, size, count);
-		
+
 		#else
-		
+
 		return ::fread (ptr, size, count, (FILE*)stream->handle);
-		
+
 		#endif
-		
+
 	}
-	
-	
+
+
 	int fseek (FILE_HANDLE *stream, long int offset, int origin) {
-		
+
 		#ifndef HX_WINDOWS
-		
+
 		return SDL_RWseek (stream ? (SDL_RWops*)stream->handle : NULL, offset, origin);
-		
+
 		#else
-		
+
 		return ::fseek ((FILE*)stream->handle, offset, origin);
-		
+
 		#endif
-		
+
 	}
-	
-	
+
+
 	long int ftell (FILE_HANDLE *stream) {
-		
+
 		#ifndef HX_WINDOWS
-		
+
 		return SDL_RWtell (stream ? (SDL_RWops*)stream->handle : NULL);
-		
+
 		#else
-		
+
 		return ::ftell ((FILE*)stream->handle);
-		
+
 		#endif
-		
+
 	}
-	
-	
+
+
 	size_t fwrite (const void *ptr, size_t size, size_t count, FILE_HANDLE *stream) {
-		
+
 		#ifndef HX_WINDOWS
-		
+
 		return SDL_RWwrite (stream ? (SDL_RWops*)stream->handle : NULL, ptr, size, count);
-		
+
 		#else
-		
+
 		return ::fwrite (ptr, size, count, (FILE*)stream->handle);
-		
+
 		#endif
-		
+
 	}
-	
-	
+
+
 }
