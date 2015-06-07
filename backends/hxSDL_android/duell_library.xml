@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<library xmlns="duell">
+    <!-- Special configuration for the Android backend goes here. -->
+
+    <platform-config>
+        <android>
+            <java-source name="HXSDL_JAVA" path="java" />
+        </android>
+    </platform-config>
+</library>

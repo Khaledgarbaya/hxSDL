@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="duell">
+
+    <app title="SampleTest" file="sampleTest" package="com.yourorganisation.testproject" version="0.0.1" company="Your Organisation"  />
+
+    <main name="MainUnitTest" />
+
+    <source path="Source" />
+
+    <duelllib name="sample" version="master" />
+    <duelllib name="duellkit" version="4.0.0+" />
+    <duelllib name="unittest" version="4.0.0+" />
+
+</project>
